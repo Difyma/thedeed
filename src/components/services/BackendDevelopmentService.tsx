@@ -87,12 +87,6 @@ const BackendDevelopmentService: React.FC = () => {
               >
                 Получить консультацию
               </button>
-              <Link
-                to="/#portfolio"
-                className="border border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-purple-600 transition-colors duration-200"
-              >
-                Посмотреть кейсы
-              </Link>
             </div>
           </div>
         </div>
