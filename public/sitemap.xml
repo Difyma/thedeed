@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- Главная страница - Заказная разработка ПО, веб-разработка, мобильные приложения -->
+  <url>
+    <loc>https://thedeed.ru/</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Услуги - Веб-разработка, React, Vue.js, Angular -->
+  <url>
+    <loc>https://thedeed.ru/service/web-development</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Услуги - Мобильная разработка, iOS, Android, React Native -->
+  <url>
+    <loc>https://thedeed.ru/service/mobile-development</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Услуги - Backend разработка, API, микросервисы, Node.js, Python -->
+  <url>
+    <loc>https://thedeed.ru/service/backend-development</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Услуги - Облачные решения, AWS, Azure, Google Cloud -->
+  <url>
+    <loc>https://thedeed.ru/service/cloud-solutions</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Услуги - Автоматизация бизнес-процессов, CRM, ERP -->
+  <url>
+    <loc>https://thedeed.ru/service/automation</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Блог - IT статьи, разработка, технологии, бизнес -->
+  <url>
+    <loc>https://thedeed.ru/blog</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Статьи блога - Заказная разработка ПО, гид для бизнеса -->
+  <url>
+    <loc>https://thedeed.ru/blog/custom-development-guide-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Автоматизация бизнес-процессов, CRM, ERP -->
+  <url>
+    <loc>https://thedeed.ru/blog/business-automation-guide-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Заказная разработка vs готовые решения, сравнение -->
+  <url>
+    <loc>https://thedeed.ru/blog/custom-vs-ready-comparison-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Выбор подрядчика, IT-компания, критерии -->
+  <url>
+    <loc>https://thedeed.ru/blog/contractor-selection-guide-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Кейс логистики, система учета, Python, React -->
+  <url>
+    <loc>https://thedeed.ru/blog/logistics-case-study-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Расчет стоимости разработки, бюджет проекта -->
+  <url>
+    <loc>https://thedeed.ru/blog/development-cost-guide-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - ИИ в бизнесе, искусственный интеллект, применение -->
+  <url>
+    <loc>https://thedeed.ru/blog/ai-business-applications-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Гид по ИИ, внедрение, ROI, бизнес-процессы -->
+  <url>
+    <loc>https://thedeed.ru/blog/ai-business-guide-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Статьи блога - Техническое задание, ТЗ, разработка ПО -->
+  <url>
+    <loc>https://thedeed.ru/blog/technical-specification-guide-2025</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Политика конфиденциальности - GDPR, персональные данные -->
+  <url>
+    <loc>https://thedeed.ru/privacy</loc>
+    <lastmod>2025-01-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+</urlset>

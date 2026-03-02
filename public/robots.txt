@@ -1,0 +1,54 @@
+User-agent: *
+Allow: /
+
+# Основные страницы и услуги
+Allow: /blog
+Allow: /service/
+Allow: /privacy
+Allow: /portfolio
+Allow: /about
+Allow: /contact
+Allow: /technologies
+
+# Блокируем технические файлы и исходный код
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: *.tsx
+Disallow: *.ts
+Disallow: *.js.map
+Disallow: *.css.map
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /tsconfig.json
+Disallow: /vite.config.ts
+
+# Блокируем параметры сортировки и фильтрации
+Disallow: /*?sort=
+Disallow: /*?filter=
+Disallow: /*?page=
+Disallow: /*?utm_*
+
+# Блокируем временные файлы
+Disallow: /.git/
+Disallow: /.vscode/
+Disallow: /dist/
+Disallow: /build/
+
+# Карта сайта
+Sitemap: https://thedeed.ru/sitemap.xml
+
+# Время задержки для краулеров (1 секунда)
+Crawl-delay: 1
+
+# Дополнительные директивы для SEO
+# Разрешаем индексацию изображений
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.webp
+Allow: /*.svg
+
+# Разрешаем индексацию CSS и JS
+Allow: /*.css
+Allow: /*.js
