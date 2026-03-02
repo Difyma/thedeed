@@ -11,51 +11,34 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Определяем мобильное устройство после монтирования
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Блокировка прокрутки body при открытом модальном окне и обработка клавиши Escape
+  // Блокировка прокрутки body при открытом модальном окне
   useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('modal-open');
+      const originalOverflow = document.body.style.overflow;
+      const originalPaddingRight = document.body.style.paddingRight;
+      
+      // Блокируем скролл
       document.body.style.overflow = 'hidden';
-      document.body.style.touchAction = 'none';
-      
-      // Обработчик клавиши Escape
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          onClose();
-        }
-      };
-      
-      document.addEventListener('keydown', handleEscape);
       
       return () => {
-        document.removeEventListener('keydown', handleEscape);
+        // Восстанавливаем скролл
+        document.body.style.overflow = originalOverflow;
+        document.body.style.paddingRight = originalPaddingRight;
       };
-    } else {
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = 'unset';
-      document.body.style.touchAction = 'auto';
     }
-    
-    // Очистка при размонтировании компонента
-    return () => {
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = 'unset';
-      document.body.style.touchAction = 'auto';
+  }, [isOpen]);
+
+  // Обработка Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
     };
+    
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -109,50 +92,89 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   
   return (
     <div 
-      className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 modal-backdrop"
+      className="lead-modal-overlay"
       onClick={onClose}
-      style={{ 
-        position: 'fixed', 
-        top: 0, 
-        left: 0, 
-        right: 0, 
-        bottom: 0, 
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+        height: '100dvh',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
         zIndex: 999999,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: isMobile ? '16px' : '24px',
       }}
     >
       <div 
-        className="bg-white rounded-2xl shadow-2xl relative animate-fadeIn lead-form-modal"
+        className="lead-modal-content"
         onClick={(e) => e.stopPropagation()}
-        style={{ 
+        style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
           width: '100%',
-          maxWidth: '28rem',
-          maxHeight: isMobile ? 'calc(100dvh - 32px)' : 'calc(100vh - 48px)',
+          maxWidth: '420px',
+          maxHeight: '90vh',
+          maxHeight: '90dvh',
           overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-          margin: 'auto',
-          padding: isMobile ? '20px' : '32px',
+          position: 'relative',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          padding: '24px',
         }}
       >
         <button 
-          onClick={onClose} 
-          className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 text-2xl font-bold z-10"
-          aria-label="Закрыть модальное окно"
-          style={{ touchAction: 'manipulation' }}
+          onClick={onClose}
+          style={{
+            position: 'absolute',
+            top: '12px',
+            right: '12px',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'transparent',
+            border: 'none',
+            borderRadius: '50%',
+            cursor: 'pointer',
+            fontSize: '24px',
+            color: '#9ca3af',
+          }}
+          aria-label="Закрыть"
         >
           ×
         </button>
-        <h3 className="text-xl sm:text-2xl font-bold mb-5 text-gray-900 pr-10">Оставить заявку</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        
+        <h3 style={{
+          fontSize: '20px',
+          fontWeight: 'bold',
+          marginBottom: '20px',
+          color: '#111827',
+          paddingRight: '40px',
+        }}>
+          Оставить заявку
+        </h3>
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <input 
             name="name" 
             value={form.name} 
             onChange={handleChange} 
             required 
             placeholder="Ваше имя" 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
-            style={{ fontSize: '16px' }}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: '1px solid #d1d5db',
+              borderRadius: '8px',
+              fontSize: '16px',
+              outline: 'none',
+            }}
           />
           <input 
             name="contact" 
@@ -160,29 +182,80 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             onChange={handleChange} 
             required 
             placeholder="Телефон или Email" 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
-            style={{ fontSize: '16px' }}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: '1px solid #d1d5db',
+              borderRadius: '8px',
+              fontSize: '16px',
+              outline: 'none',
+            }}
           />
           <textarea 
             name="message" 
             value={form.message} 
             onChange={handleChange} 
-            rows={isMobile ? 2 : 4} 
+            rows={3}
             placeholder="Комментарий" 
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none" 
-            style={{ fontSize: '16px' }}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              border: '1px solid #d1d5db',
+              borderRadius: '8px',
+              fontSize: '16px',
+              outline: 'none',
+              resize: 'none',
+              minHeight: '80px',
+            }}
           />
           <button 
             type="submit" 
-            disabled={loading} 
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-            style={{ touchAction: 'manipulation' }}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '14px',
+              backgroundColor: '#2563eb',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+              marginTop: '8px',
+            }}
           >
             {loading ? 'Отправка...' : 'Отправить'}
           </button>
         </form>
-        {success && <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-lg border border-green-200 text-sm">✓ Заявка отправлена!</div>}
-        {error && <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">⚠ {error}</div>}
+        
+        {success && (
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            backgroundColor: '#f0fdf4',
+            border: '1px solid #bbf7d0',
+            borderRadius: '8px',
+            color: '#166534',
+            fontSize: '14px',
+          }}>
+            ✓ Заявка отправлена!
+          </div>
+        )}
+        
+        {error && (
+          <div style={{
+            marginTop: '16px',
+            padding: '12px',
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            borderRadius: '8px',
+            color: '#991b1b',
+            fontSize: '14px',
+          }}>
+            ⚠ {error}
+          </div>
+        )}
       </div>
     </div>
   );
