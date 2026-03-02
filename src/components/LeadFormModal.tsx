@@ -63,9 +63,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   };
 
   const validateContact = (value: string) => {
-    // Простейшая email-валидация
     const emailRegex = /^[\w-.]+@[\w-]+\.[a-z]{2,}$/i;
-    // Простейшая валидация мобильного (Россия, международный)
     const phoneRegex = /^((\+7|7|8)?\s?\(?\d{3}\)?\s?\d{3}[-\s]?\d{2}[-\s]?\d{2})$/;
     return emailRegex.test(value) || phoneRegex.test(value);
   };
@@ -111,7 +109,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   
   return (
     <div 
-      className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 modal-backdrop p-4 sm:p-6"
+      className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 modal-backdrop"
       onClick={onClose}
       style={{ 
         position: 'fixed', 
@@ -121,27 +119,31 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         bottom: 0, 
         zIndex: 999999,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        padding: isMobile ? '16px' : '24px',
       }}
     >
       <div 
-        className="bg-white rounded-2xl shadow-2xl relative mx-auto animate-fadeIn p-6 sm:p-8 lead-form-modal"
+        className="bg-white rounded-2xl shadow-2xl relative animate-fadeIn lead-form-modal"
         onClick={(e) => e.stopPropagation()}
         style={{ 
-          maxHeight: 'calc(100vh - 2rem)',
-          width: 'min(90vw, 28rem)',
+          width: '100%',
+          maxWidth: '28rem',
+          maxHeight: isMobile ? 'calc(100dvh - 32px)' : 'calc(100vh - 48px)',
           overflowY: 'auto',
           WebkitOverflowScrolling: 'touch',
+          margin: 'auto',
+          padding: isMobile ? '20px' : '32px',
         }}
       >
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 text-xl font-bold z-10"
+          className="absolute top-3 right-3 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 text-2xl font-bold z-10"
           aria-label="Закрыть модальное окно"
           style={{ touchAction: 'manipulation' }}
         >
           ×
         </button>
-        <h3 className="text-xl sm:text-2xl font-bold mb-6 text-gray-900 pr-8">Оставить заявку</h3>
+        <h3 className="text-xl sm:text-2xl font-bold mb-5 text-gray-900 pr-10">Оставить заявку</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input 
             name="name" 
@@ -150,7 +152,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             required 
             placeholder="Ваше имя" 
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
-            style={{ fontSize: '16px' }} // Предотвращает zoom на iOS
+            style={{ fontSize: '16px' }}
           />
           <input 
             name="contact" 
@@ -159,28 +161,28 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             required 
             placeholder="Телефон или Email" 
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
-            style={{ fontSize: '16px' }} // Предотвращает zoom на iOS
+            style={{ fontSize: '16px' }}
           />
           <textarea 
             name="message" 
             value={form.message} 
             onChange={handleChange} 
-            rows={isMobile ? 3 : 4} 
+            rows={isMobile ? 2 : 4} 
             placeholder="Комментарий" 
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none" 
-            style={{ fontSize: '16px' }} // Предотвращает zoom на iOS
+            style={{ fontSize: '16px' }}
           />
           <button 
             type="submit" 
             disabled={loading} 
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             style={{ touchAction: 'manipulation' }}
           >
             {loading ? 'Отправка...' : 'Отправить'}
           </button>
         </form>
-        {success && <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-lg border border-green-200">✓ Заявка отправлена!</div>}
-        {error && <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg border border-red-200">⚠ {error}</div>}
+        {success && <div className="mt-4 p-3 bg-green-50 text-green-700 rounded-lg border border-green-200 text-sm">✓ Заявка отправлена!</div>}
+        {error && <div className="mt-4 p-3 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">⚠ {error}</div>}
       </div>
     </div>
   );
