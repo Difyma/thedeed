@@ -11,12 +11,26 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Определяем мобильное устройство после монтирования
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Блокировка прокрутки body при открытом модальном окне и обработка клавиши Escape
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('modal-open');
       document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
       
       // Обработчик клавиши Escape
       const handleEscape = (e: KeyboardEvent) => {
@@ -33,12 +47,14 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
     } else {
       document.body.classList.remove('modal-open');
       document.body.style.overflow = 'unset';
+      document.body.style.touchAction = 'auto';
     }
     
     // Очистка при размонтировании компонента
     return () => {
       document.body.classList.remove('modal-open');
       document.body.style.overflow = 'unset';
+      document.body.style.touchAction = 'auto';
     };
   }, [isOpen, onClose]);
 
@@ -93,9 +109,6 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
 
   if (!isOpen) return null;
   
-  // Определяем, является ли устройство мобильным
-  const isMobile = window.innerWidth <= 768;
-  
   return (
     <div 
       className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 modal-backdrop p-4 sm:p-6"
@@ -107,7 +120,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         right: 0, 
         bottom: 0, 
         zIndex: 999999,
-        backgroundColor: isMobile ? 'rgba(255, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
       }}
     >
       <div 
@@ -116,13 +129,15 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         style={{ 
           maxHeight: 'calc(100vh - 2rem)',
           width: 'min(90vw, 28rem)',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch',
         }}
       >
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 text-xl font-bold"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 text-xl font-bold z-10"
           aria-label="Закрыть модальное окно"
+          style={{ touchAction: 'manipulation' }}
         >
           ×
         </button>
@@ -135,6 +150,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             required 
             placeholder="Ваше имя" 
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+            style={{ fontSize: '16px' }} // Предотвращает zoom на iOS
           />
           <input 
             name="contact" 
@@ -143,19 +159,22 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             required 
             placeholder="Телефон или Email" 
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" 
+            style={{ fontSize: '16px' }} // Предотвращает zoom на iOS
           />
           <textarea 
             name="message" 
             value={form.message} 
             onChange={handleChange} 
-            rows={4} 
+            rows={isMobile ? 3 : 4} 
             placeholder="Комментарий" 
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none" 
+            style={{ fontSize: '16px' }} // Предотвращает zoom на iOS
           />
           <button 
             type="submit" 
             disabled={loading} 
             className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+            style={{ touchAction: 'manipulation' }}
           >
             {loading ? 'Отправка...' : 'Отправить'}
           </button>
