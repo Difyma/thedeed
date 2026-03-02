@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface LeadFormModalProps {
   isOpen: boolean;
@@ -11,20 +12,18 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
 
-  // Блокировка прокрутки body при открытом модальном окне
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Блокировка прокрутки body
   useEffect(() => {
     if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      const originalPaddingRight = document.body.style.paddingRight;
-      
-      // Блокируем скролл
       document.body.style.overflow = 'hidden';
-      
       return () => {
-        // Восстанавливаем скролл
-        document.body.style.overflow = originalOverflow;
-        document.body.style.paddingRight = originalPaddingRight;
+        document.body.style.overflow = 'unset';
       };
     }
   }, [isOpen]);
@@ -36,7 +35,6 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         onClose();
       }
     };
-    
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
@@ -88,44 +86,37 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
     setLoading(false);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
   
-  return (
+  const modalContent = (
     <div 
-      className="lead-modal-overlay"
-      onClick={onClose}
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: '100vw',
-        height: '100vh',
-        height: '100dvh',
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '16px',
-        zIndex: 999999,
+        zIndex: 2147483647,
       }}
+      onClick={onClose}
     >
       <div 
-        className="lead-modal-content"
-        onClick={(e) => e.stopPropagation()}
         style={{
           backgroundColor: 'white',
           borderRadius: '16px',
           width: '100%',
-          maxWidth: '420px',
-          maxHeight: '90vh',
-          maxHeight: '90dvh',
+          maxWidth: '400px',
+          maxHeight: 'calc(100vh - 32px)',
           overflowY: 'auto',
           position: 'relative',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
           padding: '24px',
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <button 
           onClick={onClose}
@@ -138,12 +129,13 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'transparent',
+            backgroundColor: '#f3f4f6',
             border: 'none',
             borderRadius: '50%',
             cursor: 'pointer',
-            fontSize: '24px',
-            color: '#9ca3af',
+            fontSize: '22px',
+            color: '#6b7280',
+            lineHeight: 1,
           }}
           aria-label="Закрыть"
         >
@@ -151,7 +143,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         </button>
         
         <h3 style={{
-          fontSize: '20px',
+          fontSize: '22px',
           fontWeight: 'bold',
           marginBottom: '20px',
           color: '#111827',
@@ -169,11 +161,12 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             placeholder="Ваше имя" 
             style={{
               width: '100%',
-              padding: '12px 16px',
+              padding: '14px 16px',
               border: '1px solid #d1d5db',
-              borderRadius: '8px',
+              borderRadius: '10px',
               fontSize: '16px',
               outline: 'none',
+              boxSizing: 'border-box',
             }}
           />
           <input 
@@ -184,11 +177,12 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             placeholder="Телефон или Email" 
             style={{
               width: '100%',
-              padding: '12px 16px',
+              padding: '14px 16px',
               border: '1px solid #d1d5db',
-              borderRadius: '8px',
+              borderRadius: '10px',
               fontSize: '16px',
               outline: 'none',
+              boxSizing: 'border-box',
             }}
           />
           <textarea 
@@ -199,13 +193,14 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             placeholder="Комментарий" 
             style={{
               width: '100%',
-              padding: '12px 16px',
+              padding: '14px 16px',
               border: '1px solid #d1d5db',
-              borderRadius: '8px',
+              borderRadius: '10px',
               fontSize: '16px',
               outline: 'none',
               resize: 'none',
               minHeight: '80px',
+              boxSizing: 'border-box',
             }}
           />
           <button 
@@ -213,16 +208,16 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             disabled={loading}
             style={{
               width: '100%',
-              padding: '14px',
+              padding: '16px',
               backgroundColor: '#2563eb',
               color: 'white',
               border: 'none',
-              borderRadius: '8px',
+              borderRadius: '10px',
               fontSize: '16px',
               fontWeight: '600',
               cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1,
-              marginTop: '8px',
+              opacity: loading ? 0.7 : 1,
+              marginTop: '4px',
             }}
           >
             {loading ? 'Отправка...' : 'Отправить'}
@@ -232,12 +227,12 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         {success && (
           <div style={{
             marginTop: '16px',
-            padding: '12px',
-            backgroundColor: '#f0fdf4',
-            border: '1px solid #bbf7d0',
-            borderRadius: '8px',
+            padding: '14px',
+            backgroundColor: '#dcfce7',
+            borderRadius: '10px',
             color: '#166534',
             fontSize: '14px',
+            textAlign: 'center',
           }}>
             ✓ Заявка отправлена!
           </div>
@@ -246,12 +241,12 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
         {error && (
           <div style={{
             marginTop: '16px',
-            padding: '12px',
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            borderRadius: '8px',
+            padding: '14px',
+            backgroundColor: '#fee2e2',
+            borderRadius: '10px',
             color: '#991b1b',
             fontSize: '14px',
+            textAlign: 'center',
           }}>
             ⚠ {error}
           </div>
@@ -259,6 +254,8 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default LeadFormModal;
