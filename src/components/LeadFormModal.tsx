@@ -12,28 +12,21 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Блокировка прокрутки body
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
+    } else {
+      document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
-  // Обработка Escape
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
+      if (e.key === 'Escape' && isOpen) onClose();
     };
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
@@ -86,88 +79,22 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
     setLoading(false);
   };
 
-  if (!isOpen || !mounted) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
   
-  const modalContent = (
-    <div 
-      style={{
-        position: 'fixed',
-        inset: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '16px',
-        zIndex: 2147483647,
-      }}
-      onClick={onClose}
-    >
-      <div 
-        style={{
-          backgroundColor: 'white',
-          borderRadius: '16px',
-          width: '100%',
-          maxWidth: '400px',
-          maxHeight: 'calc(100vh - 32px)',
-          overflowY: 'auto',
-          position: 'relative',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-          padding: '24px',
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button 
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            width: '36px',
-            height: '36px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#f3f4f6',
-            border: 'none',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            fontSize: '22px',
-            color: '#6b7280',
-            lineHeight: 1,
-          }}
-          aria-label="Закрыть"
-        >
-          ×
-        </button>
-        
-        <h3 style={{
-          fontSize: '22px',
-          fontWeight: 'bold',
-          marginBottom: '20px',
-          color: '#111827',
-          paddingRight: '40px',
-        }}>
-          Оставить заявку
-        </h3>
-        
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+  const modal = (
+    <div className="lead-modal-wrapper">
+      <div className="lead-modal-overlay" onClick={onClose} />
+      <div className="lead-modal-content">
+        <button className="lead-modal-close" onClick={onClose}>×</button>
+        <h3 className="lead-modal-title">Оставить заявку</h3>
+        <form onSubmit={handleSubmit} className="lead-modal-form">
           <input 
             name="name" 
             value={form.name} 
             onChange={handleChange} 
             required 
             placeholder="Ваше имя" 
-            style={{
-              width: '100%',
-              padding: '14px 16px',
-              border: '1px solid #d1d5db',
-              borderRadius: '10px',
-              fontSize: '16px',
-              outline: 'none',
-              boxSizing: 'border-box',
-            }}
+            className="lead-modal-input"
           />
           <input 
             name="contact" 
@@ -175,15 +102,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             onChange={handleChange} 
             required 
             placeholder="Телефон или Email" 
-            style={{
-              width: '100%',
-              padding: '14px 16px',
-              border: '1px solid #d1d5db',
-              borderRadius: '10px',
-              fontSize: '16px',
-              outline: 'none',
-              boxSizing: 'border-box',
-            }}
+            className="lead-modal-input"
           />
           <textarea 
             name="message" 
@@ -191,71 +110,145 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({ isOpen, onClose, source }
             onChange={handleChange} 
             rows={3}
             placeholder="Комментарий" 
-            style={{
-              width: '100%',
-              padding: '14px 16px',
-              border: '1px solid #d1d5db',
-              borderRadius: '10px',
-              fontSize: '16px',
-              outline: 'none',
-              resize: 'none',
-              minHeight: '80px',
-              boxSizing: 'border-box',
-            }}
+            className="lead-modal-textarea"
           />
-          <button 
-            type="submit" 
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: '#2563eb',
-              color: 'white',
-              border: 'none',
-              borderRadius: '10px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-              marginTop: '4px',
-            }}
-          >
+          <button type="submit" disabled={loading} className="lead-modal-submit">
             {loading ? 'Отправка...' : 'Отправить'}
           </button>
         </form>
-        
-        {success && (
-          <div style={{
-            marginTop: '16px',
-            padding: '14px',
-            backgroundColor: '#dcfce7',
-            borderRadius: '10px',
-            color: '#166534',
-            fontSize: '14px',
-            textAlign: 'center',
-          }}>
-            ✓ Заявка отправлена!
-          </div>
-        )}
-        
-        {error && (
-          <div style={{
-            marginTop: '16px',
-            padding: '14px',
-            backgroundColor: '#fee2e2',
-            borderRadius: '10px',
-            color: '#991b1b',
-            fontSize: '14px',
-            textAlign: 'center',
-          }}>
-            ⚠ {error}
-          </div>
-        )}
+        {success && <div className="lead-modal-success">✓ Заявка отправлена!</div>}
+        {error && <div className="lead-modal-error">⚠ {error}</div>}
       </div>
+      <style>{`
+        .lead-modal-wrapper {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 999999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+        }
+        .lead-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          z-index: 1;
+        }
+        .lead-modal-content {
+          position: relative;
+          z-index: 2;
+          background: white;
+          border-radius: 16px;
+          width: 100%;
+          max-width: 400px;
+          max-height: 90vh;
+          overflow-y: auto;
+          padding: 24px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          animation: lead-modal-fade-in 0.2s ease-out;
+        }
+        @keyframes lead-modal-fade-in {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .lead-modal-close {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #f3f4f6;
+          border: none;
+          border-radius: 50%;
+          cursor: pointer;
+          font-size: 22px;
+          color: #6b7280;
+          line-height: 1;
+        }
+        .lead-modal-close:active {
+          background: #e5e7eb;
+        }
+        .lead-modal-title {
+          font-size: 22px;
+          font-weight: bold;
+          margin-bottom: 20px;
+          color: #111827;
+          padding-right: 40px;
+        }
+        .lead-modal-form {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .lead-modal-input,
+        .lead-modal-textarea {
+          width: 100%;
+          padding: 14px 16px;
+          border: 1px solid #d1d5db;
+          border-radius: 10px;
+          font-size: 16px;
+          outline: none;
+          box-sizing: border-box;
+          font-family: inherit;
+        }
+        .lead-modal-input:focus,
+        .lead-modal-textarea:focus {
+          border-color: #2563eb;
+        }
+        .lead-modal-textarea {
+          resize: none;
+          min-height: 80px;
+        }
+        .lead-modal-submit {
+          width: 100%;
+          padding: 16px;
+          background: #2563eb;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-top: 4px;
+        }
+        .lead-modal-submit:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+        .lead-modal-submit:active {
+          background: #1d4ed8;
+        }
+        .lead-modal-success,
+        .lead-modal-error {
+          margin-top: 16px;
+          padding: 14px;
+          border-radius: 10px;
+          font-size: 14px;
+          text-align: center;
+        }
+        .lead-modal-success {
+          background: #dcfce7;
+          color: #166534;
+        }
+        .lead-modal-error {
+          background: #fee2e2;
+          color: #991b1b;
+        }
+      `}</style>
     </div>
   );
 
-  return createPortal(modalContent, document.body);
+  return createPortal(modal, document.body);
 };
 
 export default LeadFormModal;
